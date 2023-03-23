@@ -1,0 +1,12 @@
+@import './logo';
+@import './nav';
+@import './icons';
+
+.header {
+    padding: $spacer 0;
+    box-shadow: $box-shadow;
+
+    &__container {
+        @include flex($jc: space-between, $ai: center);
+    }
+}

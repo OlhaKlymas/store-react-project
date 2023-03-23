@@ -1,0 +1,40 @@
+$spinner-size: 50px;
+
+.spinner {
+    height: 50vh;
+
+    @include flex($jc: center, $ai: center);
+
+    &__wrapper {
+        position: relative;
+        width: $spinner-size;
+        height: $spinner-size;
+    }
+
+    &__layout {
+        width: $spinner-size;
+        height: $spinner-size;
+        border: 3px solid $white;
+        border-radius: 50%;
+    }
+
+    &__indicator {
+        position: absolute;
+        top: 0;
+        width: $spinner-size;
+        height: $spinner-size;
+        border: 3px solid $grey;
+        border-radius: 50%;
+        border-color: transparent $blue-dark transparent transparent;
+        animation: spinner 1s infinite linear;
+    }
+}
+
+@keyframes spinner {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);        
+    }
+}
