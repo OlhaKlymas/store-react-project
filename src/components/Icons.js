@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { getCartItems } from './../scripts/cart';
+import { useSelector } from 'react-redux';
 
 const Icons = () => {
     const [counter, setCounter] = useState('');
 
+    const ids = useSelector(state => state.cartReducer.idsInCart);
+
     useEffect(() => {
-        let num = getCartItems();
-        setCounter(num?.length || '')
-    })
+        setCounter(ids?.length || '')
+    }, [ids])
 
     return (
         <Link to='/cart'>

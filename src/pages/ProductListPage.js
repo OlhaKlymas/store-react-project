@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import MainLayout from '../layouts/MainLayout';
 import ProductsNavbar from '../components/ProductsNavbar';
@@ -6,36 +6,28 @@ import ProductList from '../components/ProductList';
 import Loader from '../components/Loader';
 import Error from '../components/Error';
 import Notification from '../components/Notification';
-import { fetchProducts } from '../scripts/api';
+import { fetchProducts } from '../redux/thunk/products.thunk';
+import { useSelector, useDispatch } from 'react-redux';
 import '../scss/pages/products.scss';
+import { setNotificationAction } from '../redux/actions/notification.action';
 
 const ProductListPage = () => {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const { search } = useLocation();
     const searchParams = new URLSearchParams(search);
     const errorMessage = 'Sorry, something went wrong... Please, check your internet connection';
 
-    const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || 'all');
-    const [sorted, setSorted] = useState(searchParams.get('sort'));
-    const [searched, setSearched] = useState(searchParams.get('search'));
-    const [products, setProducts] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [isError, setIsError] = useState(false);
-    const [notification, setNotification] = useState('');
+    const selectedCategory = useSelector(state => state.productsReducer.selectedCategory);
+    const products = useSelector(state => state.productsReducer.products);
+    const isLoading = useSelector(state => state.productsReducer.isLoading);
+    const isError = useSelector(state => state.productsReducer.isError);
+    const sorted = useSelector(state => state.productsReducer.sorted);
+    const searched = useSelector(state => state.productsReducer.searched);
 
     const getProducts = () => {
         setSearchParamsToUrl();
-        fetchProducts(selectedCategory)
-            .then(goods => {
-                goods = searched ? goods.filter(items => items.title.toLowerCase().includes(searched)) : goods;
-                goods = sorted === 'price' ? goods.sort((a, b) => a.price - b.price) : sorted === 'title' ? goods.sort((a, b) => a.title.toLowerCase() < b.title.toLowerCase() ? -1 : 1) : goods;
-                setProducts(goods);
-                setIsLoading(false);
-            })
-            .catch(() => {
-                setIsError(true);
-                setIsLoading(false);
-            });
+        dispatch(fetchProducts(selectedCategory, searched, sorted))
     }
 
     const setSearchParamsToUrl = () => {
@@ -55,45 +47,32 @@ const ProductListPage = () => {
 
         navigate({ search: searchParams.toString() });
     }
-
-    const changeSearchInput = (val) => {
-        setSearched(val);
-    }
-
-    const selectCategory = (val) => {
-        setSelectedCategory(val)
-    }
-
-    const changeSort = (val) => {
-        setSorted(val)
-    }
-
+    
     const showNotification = (text) => {
-        setNotification(text);
+        dispatch(setNotificationAction(text));
     }
     
     useEffect(() => {
         getProducts();
-    }, [searched, selectedCategory, sorted])
-
+    }, [sorted, searched, selectedCategory])
+    
     return (
-        <MainLayout>
-            {isLoading ? <Loader /> : isError ? <Error message={errorMessage}/> : 
+        <MainLayout> 
             <>
                 <ProductsNavbar 
-                    changeSearchInput={changeSearchInput}
-                    changeSort={changeSort}
-                    selectCategory={selectCategory}
                     selectedCategory={selectedCategory}
                     sorted={sorted}
                     searched={searched}
                 />
-                <ProductList 
-                    products={products}
-                    showNotification={showNotification}
-                />
-                <Notification message={notification} />
-            </>}
+                
+                {isLoading ? <Loader /> : isError ? <Error message={errorMessage}/> :
+                    <ProductList 
+                        products={products}
+                        showNotification={showNotification}
+                    />
+                }
+                <Notification />
+            </>
         </MainLayout>
     )
 }

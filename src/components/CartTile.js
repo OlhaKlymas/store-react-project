@@ -1,8 +1,18 @@
 import imageBucket from './../images/bucket.svg';
 import Image from './Image';
-import { changeCart } from '../scripts/cart';
+import { changeItemsIdsInCart } from '../redux/thunk/cart.thunk';
+import { useSelector, useDispatch } from 'react-redux';
 
 const CartTile = (props) => {
+    const dispatch = useDispatch();
+    const ids = useSelector(state => state.cartReducer.idsInCart);
+
+    const changeItemsInCart = (id, event) => {
+        dispatch(changeItemsIdsInCart(id, event, ids))
+    }
+
+    console.log(props)
+
     return (
         <li data-id={props.product.id} className="cart-list__item cart-tile">
             <a href={`/products/${props.product.id}`} className="cart-tile__link">
@@ -19,8 +29,9 @@ const CartTile = (props) => {
                         </span>
                         <span 
                             className="cart-tile__delete"
-                            onClick={() => {
-                                changeCart(props.product.id, 'remove')
+                            onClick={(e) => {
+                                e.preventDefault();
+                                changeItemsInCart(props.product.id, 'remove')
                                 props.showNotification(`${props.product.title} was removed from cart`)
                             }}
                         > 

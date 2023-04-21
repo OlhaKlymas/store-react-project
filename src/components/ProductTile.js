@@ -1,16 +1,24 @@
 import imageBucket from './../images/bucket.svg';
 import Image from './Image';
 import Tooltip from './Tooltip';
-import { changeCart, getCartItems } from './../scripts/cart';
+import { changeItemsIdsInCart } from '../redux/thunk/cart.thunk';
 import { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 const Product = (props) => {
+    const dispatch = useDispatch();
+    const ids = useSelector(state => state.cartReducer.idsInCart);
+    
     const [isAddedToCart, setIsAddedToCart] = useState(false);
 
+    const changeItemsInCart = (id, event) => {
+        dispatch(changeItemsIdsInCart(id, event, ids))
+    }
+
     useEffect(() => {
-        let ids = getCartItems();
-        setIsAddedToCart(ids.includes(props.product.id.toString()));
-    }, [props.product.id])
+        props.product.id && setIsAddedToCart(ids.includes(props.product.id.toString()));
+    }, [props.product.id, ids])
 
     return (
         <div data-id={props.product.id} className="product-list__item tile">
@@ -21,7 +29,7 @@ const Product = (props) => {
                         className={isAddedToCart ? "tile__delete" : "tile__delete hidden"}
                         onClick={() => {
                             setIsAddedToCart(false)
-                            changeCart(props.product.id, 'remove')
+                            changeItemsInCart(props.product.id, 'remove')
                             props.showNotification(`${props.product.title} was removed from cart`)
                         }}
                     > 
@@ -31,15 +39,15 @@ const Product = (props) => {
                         />
                     </span>
                 </span>
-                <a href={`/products/${props.product.id}`} className="tile__image">
+                <Link to={`/products/${props.product.id}`} className="tile__image">
                     <Image 
                         src={props.product.image}
                         alt={props.product.title}
                     />
-                </a>
-                <a href={`/products/${props.product.id}`} className="tile__title">
+                </Link>
+                <Link to={`/products/${props.product.id}`} className="tile__title">
                     {props.product.title}
-                </a>
+                </Link>
             </div>
             <div className="tile__info">
                 <span className="tile__price">
@@ -48,7 +56,7 @@ const Product = (props) => {
                 <button className={isAddedToCart ? "btn btn--disabled" : "btn"}
                     onClick={() => {
                         setIsAddedToCart(true)
-                        changeCart(props.product.id, 'add')
+                        changeItemsInCart(props.product.id, 'add')
                         props.showNotification(`${props.product.title} was added to cart`)
                     }}
                 >

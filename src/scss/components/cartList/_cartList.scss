@@ -1,3 +1,11 @@
 .cart-list {
     @include flex($gap: $spacer);
+
+    &--empty {
+        @include flex($dir: column, $ai: center, $gap: $spacer-3);
+    }
+
+    &__btn {
+        display: block;
+    }
 }

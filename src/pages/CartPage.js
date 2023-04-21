@@ -1,48 +1,31 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import MainLayout from '../layouts/MainLayout';
 import Loader from '../components/Loader';
-import Error from '../components/Error';
-import CartTile from '../components/CartTile';
-import { getCartItems } from '../scripts/cart';
-import { fetchProduct } from '../scripts/api';
+import CartEmpty from '../components/CartEmpty';
+import CartList from '../components/CartList';
 import '../scss/pages/cart.scss';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchProductsInCart } from '../redux/thunk/cart.thunk';
 
 const CartPage = () => {
-    const [products, setProducts] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [isError, setIsError] = useState(false);
-
-    const errorMessage = 'Sorry, something went wrong... Please, check your internet connection';
+    const dispatch = useDispatch();
+    
+    const isLoading = useSelector(state => state.cartReducer.isLoading);
+    const isEmpty = useSelector(state => state.cartReducer.isEmpty);
+    const products = useSelector(state => state.cartReducer.products);
+    const ids = useSelector(state => state.cartReducer.idsInCart);
 
     const getProducts = () => {
-        let ids = [];
-        let allProducts = getCartItems();
-        allProducts.map(id => {
-            fetchProduct(id)
-                .then(good => {
-                    ids.push(good);
-                    setProducts(ids);
-                    setIsLoading(false);
-                })
-                .then()
-                .catch(() => {
-                    setIsError(true);
-                    setIsLoading(false);
-                });
-        })
+        dispatch(fetchProductsInCart(ids));
     }
 
     useEffect(() => {
         getProducts()
-    }, [])
+    }, [ids])
 
     return (
         <MainLayout>
-            {isLoading ? <Loader /> : isError ? <Error message={errorMessage} /> : 
-                <ul className='cart-list'>
-                    {products.map(product => <CartTile key={product.id} product={product} /> )}
-                </ul>
-            }
+            {isLoading ? <Loader /> : isEmpty ? <CartEmpty /> : <CartList products={products} /> }
         </MainLayout>
     )
 }

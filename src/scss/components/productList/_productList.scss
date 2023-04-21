@@ -3,4 +3,8 @@
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     grid-gap: $spacer;
     padding: $spacer-2 0;
+
+    &--empty {
+        @include flex($dir: column, $ai: center, $gap: $spacer-3);
+    }
 }
