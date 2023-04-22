@@ -1,0 +1,18 @@
+{
+  "files": {
+    "main.css": "/store-react-project/static/css/main.d3a4002a.css",
+    "main.js": "/store-react-project/static/js/main.a9f223da.js",
+    "static/js/787.00466070.chunk.js": "/store-react-project/static/js/787.00466070.chunk.js",
+    "static/media/Roboto-Regular.ttf": "/store-react-project/static/media/Roboto-Regular.fc2b5060f7accec5cf74.ttf",
+    "static/media/logo.png": "/store-react-project/static/media/logo.4e02a47fb6c51a25104f.png",
+    "static/media/bucket.svg": "/store-react-project/static/media/bucket.d6823c8fd4fcf43eeb7f22adfddc8f90.svg",
+    "index.html": "/store-react-project/index.html",
+    "main.d3a4002a.css.map": "/store-react-project/static/css/main.d3a4002a.css.map",
+    "main.a9f223da.js.map": "/store-react-project/static/js/main.a9f223da.js.map",
+    "787.00466070.chunk.js.map": "/store-react-project/static/js/787.00466070.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.d3a4002a.css",
+    "static/js/main.a9f223da.js"
+  ]
+}
