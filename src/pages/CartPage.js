@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import MainLayout from '../layouts/MainLayout';
 import Loader from '../components/Loader';
 import CartEmpty from '../components/CartEmpty';
-import CartList from '../components/CartList';
+import CartTile from '../components/CartTile';
 import '../scss/pages/cart.scss';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchProductsInCart } from '../redux/thunk/cart.thunk';
@@ -25,7 +25,10 @@ const CartPage = () => {
 
     return (
         <MainLayout>
-            {isLoading ? <Loader /> : isEmpty ? <CartEmpty /> : <CartList products={products} /> }
+            {isLoading ? <Loader /> : isEmpty ? <CartEmpty /> : 
+            <ul className='cart-list'>
+                {products.map(product => <CartTile key={product.id} product={product} />)}
+            </ul>}
         </MainLayout>
     )
 }
